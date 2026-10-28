@@ -81,27 +81,8 @@ const ChartPanel = ({ data, isLarge = false, symbol }) => {
     }
   }, [data, order, dataLoaded]);
 
-  // Hook to switch intervals at random intervals
-  useEffect(() => {
-    if (!dataLoaded) return;
-
-    const switchTime = Math.floor(
-      Math.random() *
-        (config.dashboard.timeSwitch.maxInterval -
-          config.dashboard.timeSwitch.minInterval) +
-        config.dashboard.timeSwitch.minInterval
-    );
-
-    const timer = setInterval(() => {
-      setCurrentInterval((current) => {
-        const currentIndex = order.indexOf(current);
-        return order[(currentIndex + 1) % order.length];
-      });
-    }, switchTime);
-
-    return () => clearInterval(timer);
-  }, [order, dataLoaded]);
-
+  // Automatic interval switching disabled to allow manual selection.
+    
   // Memoized chart data
   const chartData = useMemo(() => {
     if (!data || !data[currentInterval]) return [];
@@ -223,6 +204,23 @@ const ChartPanel = ({ data, isLarge = false, symbol }) => {
   return (
     <div className="chart-panel">
       {headerContent}
+<div style={{ padding: '8px 12px' }}>
+  <label htmlFor={`interval-${symbol}`}>
+    Time interval:{' '}
+  </label>
+  <select
+    id={`interval-${symbol}`}
+    value={currentInterval}
+    onChange={(e) => setCurrentInterval(e.target.value)}
+  >
+    {order.map((interval) => (
+      <option key={interval} value={interval}>
+        {config.crypto.frequencies[interval]?.display || interval}
+      </option>
+    ))}
+  </select>
+</div>
+
       <div className="chart-panel-plot">
         <ResponsiveContainer width="100%" height="100%" isAnimationActive={false}>
           <LineChart
