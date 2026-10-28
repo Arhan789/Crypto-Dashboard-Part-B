@@ -235,8 +235,8 @@ async def data_feed(websocket):
 async def main():
     server = await websockets.serve(
         data_feed, 
-        'localhost', 
-        8000, 
+        '0.0.0.0', 
+        int(os.environ.get("PORT", 8000)), 
         max_size=10_000_000,  # 10MB message size limit
         ping_interval=30,
         ping_timeout=10
