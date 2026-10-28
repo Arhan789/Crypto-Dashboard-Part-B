@@ -232,11 +232,24 @@ async def data_feed(websocket):
 ##################
 # SERVER STARTUP
 ##################
+from websockets.http11 import Response
+from websockets.datastructures import Headers
+
+def health_check(connection, request):
+    if request.path == "/health":
+        return Response(
+            200,
+            "OK",
+            Headers([("Content-Type", "text/plain")]),
+            b"OK",
+        )
+    return None
 async def main():
     server = await websockets.serve(
-        data_feed, 
-        '0.0.0.0', 
-        int(os.environ.get("PORT", 8000)), 
+    data_feed,
+    '0.0.0.0',
+    int(os.environ.get("PORT", 8000)),
+    process_request=health_check, 
         max_size=10_000_000,  # 10MB message size limit
         ping_interval=30,
         ping_timeout=10
