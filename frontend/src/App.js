@@ -18,7 +18,7 @@ function App() {
 
     const connectWebSocket = () => {
       if (!active) return;
-      socket = new WebSocket('wss://crypto-dashboard-part-b.onrender.com');
+      socket = new WebSocket('wss://crypto-dashboard-backend-arhan.onrender.com');
 
       socket.onopen = () => {
         if (active) setWsStatus('connected');
